@@ -1,7 +1,7 @@
 # Azure-Logic-Apps-Workflows
 This repo is to show how we can use Azure Logic App (Standard) to build multiple workflows and chain them together.
 
-## Workflow 1
+## Workflow 1 (wf1.png, wf1.json)
 The Http trigger looks for a body of
 ~~~
 {
@@ -27,7 +27,7 @@ The output of the Compose is used to call out for IP addresses from Workflow 2.
 
 The returned body is directly fed to the caller.
 
-## Workflow 2
+## Workflow 2 (wf2.png, wf2.json)
 Based on if the value of user_email is ended with ".com" or not, two Response actions return different IP addresses. 
 
 ## Testing
