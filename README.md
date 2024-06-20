@@ -28,9 +28,14 @@ The output of the Compose is used to call out for IP addresses from Workflow 2.
 The returned body is directly fed to the caller.
 
 ## Workflow 2
-Based on if the value of user_email is ended with ".com" or not, two Response actions return different IP addresses. For example, if Http request with body of
+Based on if the value of user_email is ended with ".com" or not, two Response actions return different IP addresses. 
+
+## Testing
+From Postman, Https POST calls are made with the URL from the wf1 http trgger's (system generated at creation time). For example, if a ttp request with body of
 ~~~
-{"email":"abcd@abcd.com"}
+{
+  "email":"abcd@abcd.com"
+}
 ~~~
 The response of whole workflows is
 ~~~
@@ -40,7 +45,9 @@ The response of whole workflows is
 ~~~
 If the Http reuqest body changes to 
 ~~~
-{"email":"abcd@abcd.edu"}
+{
+  "email":"abcd@abcd.edu"
+}
 ~~~
 The response is
 ~~~
