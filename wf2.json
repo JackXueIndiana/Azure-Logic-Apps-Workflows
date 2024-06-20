@@ -1,0 +1,67 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "IsDocCom": {
+                "actions": {
+                    "RespDomainCom": {
+                        "inputs": {
+                            "body": {
+                                "ips": "10.10.10.10, 10.10.10.11"
+                            },
+                            "statusCode": 200
+                        },
+                        "kind": "Http",
+                        "type": "Response"
+                    }
+                },
+                "else": {
+                    "actions": {
+                        "RespDomainNotCom": {
+                            "inputs": {
+                                "body": {
+                                    "ips": "100.10.10.10, 100.10.10.11"
+                                },
+                                "statusCode": 200
+                            },
+                            "kind": "Http",
+                            "type": "Response"
+                        }
+                    }
+                },
+                "expression": {
+                    "and": [
+                        {
+                            "endsWith": [
+                                "@triggerBody()?['user_email']",
+                                ".com"
+                            ]
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "type": "If"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "Validation": {
+                "inputs": {
+                    "method": "POST",
+                    "schema": {
+                        "properties": {
+                            "user_email": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "kind": "Stateful"
+}

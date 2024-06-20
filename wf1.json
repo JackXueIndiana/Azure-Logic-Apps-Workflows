@@ -1,0 +1,114 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Email_is_not_empty": {
+                "actions": {
+                    "Call_out_for_IPs": {
+                        "inputs": {
+                            "body": "@outputs('Compose_JSON')",
+                            "method": "POST",
+                            "uri": "https://xinxuelogic1.azurewebsites.net:443/api/xinxuewf2/triggers/Validation/invoke?api-version=2022-05-01&sp=%2Ftriggers%2FValidation%2Frun&sv=1.0&sig=jyCFCCPazbR6gK6WnSmKnb2vw_F1pygzgN2dMMPAMNE"
+                        },
+                        "runAfter": {
+                            "Compose_JSON": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        },
+                        "type": "Http"
+                    },
+                    "Compose_JSON": {
+                        "inputs": {
+                            "user_email": "@{variables('user_email')}"
+                        },
+                        "type": "Compose"
+                    },
+                    "Response_Ips": {
+                        "inputs": {
+                            "body": "@body('Call_out_for_IPs')",
+                            "statusCode": 200
+                        },
+                        "kind": "Http",
+                        "runAfter": {
+                            "Call_out_for_IPs": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "Response"
+                    }
+                },
+                "else": {
+                    "actions": {
+                        "RespEmptyEmail": {
+                            "inputs": {
+                                "body": {
+                                    "error": "email is empty"
+                                },
+                                "statusCode": 200
+                            },
+                            "kind": "Http",
+                            "type": "Response"
+                        }
+                    }
+                },
+                "expression": {
+                    "and": [
+                        {
+                            "not": {
+                                "equals": [
+                                    "@variables('user_email')",
+                                    ""
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "set_user_email": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "If"
+            },
+            "set_user_email": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "user_email",
+                            "type": "string",
+                            "value": "@triggerBody()?['email']"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "type": "InitializeVariable"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "xinxuehttptrigger": {
+                "inputs": {
+                    "method": "POST",
+                    "schema": {
+                        "properties": {
+                            "email": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "kind": "Http",
+                "operationOptions": "EnableSchemaValidation",
+                "type": "Request"
+            }
+        }
+    },
+    "kind": "Stateful"
+}
